@@ -6,10 +6,17 @@ ENVIRONMENT=$1
 case $ENVIRONMENT in
 
 uat)
-  echo "stops container in uat..."
+  echo "stops db container in uat..."
   ssh -t ${UAT_HOST} \
     sudo podman stop feedreader-db-uat
-    #sudo podman stop feedreader-uat
+
+  echo "stops container in uat..."
+  ssh -t ${UAT_HOST} \
+    sudo podman stop feedreader-uat
+
+  echo "removes pod in uat..."
+  ssh -t ${UAT_HOST} \
+    sudo podman pod rm feedreader
 ;;
 
 prod)

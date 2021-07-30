@@ -10,8 +10,13 @@ help: ## show this help
 	sort | \
 	awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}'
 
+.PHONY: clean
+clean: ## cleans remnants of the build process
+	echo "TODO: configure clean-prod"
+	#. ./scripts/clean.sh dev
+
 .PHONY: inspect
-clean: ## runs psql inside an active local container to allow database inspection and queries
+inspect: ## runs psql inside an active local container to allow database inspection and queries
 	docker exec -it -u postgres feedreader-db psql
 
 ##############

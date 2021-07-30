@@ -10,7 +10,7 @@ uat)
   mkdir -p dist
 
   echo "copies files to distribute..."
-  cp Dockerfile dist/
+  cp Dockerfile* dist/
 
   echo "distributes dist/ folder..."
   scp -r dist ${UAT_HOST}:/mnt/msata/build/uat
@@ -22,17 +22,24 @@ uat)
       -t acbilson/feedreader-db-uat:alpine \
       /mnt/msata/build/uat
 
-  echo "TODO: builds image on UAT"
+  echo "builds image on UAT"
+  ssh -t ${UAT_HOST} \
+    sudo podman build \
+      -f /mnt/msata/build/uat/Dockerfile \
+      -t acbilson/feedreader-uat:latest \
+      /mnt/msata/build/uat
+
 ;;
 
 prod)
   echo "creates files from template..."
-  mkdir -p dist && \
-    envsubst < template/container-feedreader-db.service > dist/container-feedreader-db.service &&
-    envsubst < template/container-feedreader.service > dist/container-feedreader.service
+  mkdir -p dist
+  envsubst < template/pod-feedreader.service > dist/pod-feedreader.service
+  envsubst < template/container-feedreader-db.service > dist/container-feedreader-db.service
+  envsubst < template/container-feedreader.service > dist/container-feedreader.service
 
   echo "copies files to distribute..."
-  cp Dockerfile dist/
+  cp Dockerfile* dist/
 
   echo "distributes dist/ folder..."
   scp -r dist ${PROD_HOST}:/mnt/msata/build/prod
@@ -40,11 +47,16 @@ prod)
   echo "builds db image on production"
   ssh -t ${PROD_HOST} \
     sudo podman build \
-      -f /mnt/msata/build/prod/Dockerfile \
+      -f /mnt/msata/build/prod/Dockerfile-db \
       -t acbilson/feedreader-db:alpine \
       /mnt/msata/build/prod
 
-  echo "TODO: builds image on production"
+  echo "builds image on production"
+  ssh -t ${PROD_HOST} \
+    sudo podman build \
+      -f /mnt/msata/build/prod/Dockerfile \
+      -t acbilson/feedreader:latest \
+      /mnt/msata/build/prod
 ;;
 
 *)
