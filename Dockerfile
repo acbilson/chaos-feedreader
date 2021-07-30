@@ -1,0 +1,1 @@
+FROM miniflux/miniflux:latest
