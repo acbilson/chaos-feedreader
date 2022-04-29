@@ -25,6 +25,7 @@ prod)
   ssh -t ${PROD_HOST} sudo podman stop feedreader-db
   ssh -t ${PROD_HOST} sudo systemctl disable feedreader
   ssh -t ${PROD_HOST} sudo podman stop feedreader
+  ssh -t ${PROD_HOST} sudo podman pod rm feedreader
 ;;
 
 *)
